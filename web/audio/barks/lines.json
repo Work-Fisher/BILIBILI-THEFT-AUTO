@@ -1,0 +1,28 @@
+{
+  "_about": "Street barks for 月湾 Moonbay (js/peds.js plays them through js/samples.js). Original lines, no real or game-series names. node tools/tts.mjs --barks [--force] renders every line in the voices listed under 'say' -> audio/barks/<cat>_<n>_<voice>.mp3 + manifest.json.",
+  "voices": {
+    "mY": { "speaker": "en_male_bruce_uranus_bigtts", "res": "seed-tts-2.0", "who": "young man", "hint": "a guy in his twenties" },
+    "mA": { "speaker": "en_male_michael_uranus_bigtts", "res": "seed-tts-2.0", "who": "man in his forties", "hint": "a man in his forties" },
+    "mO": { "speaker": "en_male_tim_uranus_bigtts", "res": "seed-tts-2.0", "who": "older man", "hint": "a man in his late sixties, a little gravelly", "rate": -8 },
+    "fY": { "speaker": "en_female_skye_uranus_bigtts", "res": "seed-tts-2.0", "who": "young woman", "hint": "a woman in her twenties" },
+    "fA": { "speaker": "en_female_nadia_uranus_bigtts", "res": "seed-tts-2.0", "who": "woman in her thirties", "hint": "a woman in her thirties" },
+    "fO": { "speaker": "en_female_stokie_uranus_bigtts", "res": "seed-tts-2.0", "who": "older woman", "hint": "a woman in her sixties", "rate": -6 }
+  },
+  "cats": {
+    "bump":     { "zh": "被擦碰", "mood": "Annoyed, muttered at someone who just bumped into you on the sidewalk. Short and natural, not theatrical.",
+                  "lines": ["Hey. Watch it.", "Excuse you.", "Wow. Okay. You're welcome.", "Eyes up, man.", "Seriously? There's a whole sidewalk.", "Ow. Little personal space?"] },
+    "gunpoint": { "zh": "被枪指着", "mood": "Terrified, shaky, pleading quietly with someone pointing a gun at you.",
+                  "lines": ["Okay, okay. Easy. Easy.", "I don't want any trouble.", "Take whatever. Just take it.", "My hands are up! See? They're up!", "I didn't see your face, I swear.", "Don't. Don't do this."] },
+    "flee":     { "zh": "枪战逃跑", "mood": "Panicked, shouting while running away from gunfire, out of breath.",
+                  "lines": ["Get down!", "Run! Just run!", "Somebody's shooting!", "Move, move, move!", "Oh my God, oh my God!", "Where do I go? Where do I go?"] },
+    "film":     { "zh": "举手机拍", "mood": "Excited and a bit breathless, filming something wild on your phone, talking half to the phone.",
+                  "lines": ["Oh, I'm getting all of this.", "Are you guys seeing this right now?", "Chat, this is not staged.", "Hold on, hold on. I'm live.", "Nobody is gonna believe this.", "Zoom in, zoom in."] },
+    "road":     { "zh": "司机路怒", "mood": "An impatient driver yelling out of the car window, irritated, loud.",
+                  "lines": ["Move it!", "It's green! Go!", "Are you parking or what?", "Get outta the road!", "Come on, man. Today!", "Learn to drive!"] },
+    "near":     { "zh": "险些被撞", "mood": "Startled and angry, a car nearly hit you, shouting after it.",
+                  "lines": ["Whoa! Slow down!", "You almost hit me!", "Hey! That's a crosswalk!", "Are you crazy?", "Brakes! Use them!", "Unbelievable."] },
+    "push":     { "zh": "被推挤还手", "mood": "Squaring up, angry, someone just shoved you.",
+                  "lines": ["Push me again. Go ahead.", "You wanna do this? Let's do this.", "Back off!", "Oh, now you're done."] }
+  },
+  "say": "line n goes to one male voice (mY, mA, mO by n mod 3) and one female voice (fY, fA, fO by (n + 1) mod 3); 'road' skips the old voices for the young adult ones"
+}

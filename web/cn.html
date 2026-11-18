@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BILIBILI THEFT AUTO 1</title>
+<script>["front","cn"].forEach(function(n){document.write('<link rel="stylesheet" href="css/'+n+'.css?v='+Date.now()+'">');});</script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="hud"></div>
+<div id="boot"><div class="boot-title">BILIBILI THEFT AUTO <i>1</i></div><div class="boot-bar"><i id="boot-fill"></i></div><div id="boot-msg">正在加载</div></div>
+<div id="err"></div>
+<script src="vendor/three.min.js"></script>
+<script src="vendor/GLTFLoader.js"></script>
+<script src="vendor/SkeletonUtils.js"></script>
+<script>
+/* cn.html — BILIBILI THEFT AUTO 1. Game: js/cngame.js, styles: css/cn.css. Free roam in a fictional American port city: no story, no opening film, no delivery jobs, no debt
+   (g7, 2026-11-17 — js/cnstory.js / cntrailer.js / opening.js / economy.js / vo.js are in _archive/2026-11-17-story/, the full pre-removal copy in _archive/2026-11-17-before-story-removal/).
+   Worlds: ?world=ct 玉埠 Chinatown (the default, see DEFAULT_WORLD) · ?world=river the old 江城 四方街 · ?world=coast 月湾 (being built).
+   Query: ?auto=menu|load|free|foot|cross|ride|fall|bike|car|carchase|wanted|busted|market|room|noodle|hotpot|lobby|warehouse|shop (&shop=weapons|tofu|clothes|outlet|tailor|dealer|garage, see js/shops.js)   &at=<seconds fast-forwarded>
+          &t=<hours>   &px=&pz=&ph=<deg>   &yaw=<deg>&pitch=<deg>   &view=1 (first person)   &hud=0   &fx=0   &atmos=0   &pop=0|<max>   &traffic=0|<n>   &debug=1
+          &only=a,b,c  load only these modules (core and cngame always load; anything missing falls back to a placeholder)   &selftest=1  headless logic test
+   Modules load one by one; a missing or broken one never stops the game. */
+(function () {
+  /* DEFAULT_WORLD: what a bare cn.html opens — 'ct' 玉埠 Chinatown · 'river' the old 江城 · 'coast' once 月湾 is ready. The world modules read location.search themselves,
+     so a bare URL gets ?world=<DEFAULT_WORLD> written into it (history.replaceState) before anything loads. The self-test keeps the old road layout it was written against. */
+  var DEFAULT_WORLD = 'coast';
+  if (!/[?&]world=/.test(location.search) && !/[?&]selftest=1/.test(location.search)) { try { var q0 = new URLSearchParams(location.search); q0.set('world', DEFAULT_WORLD); history.replaceState(history.state, '', location.pathname + '?' + q0.toString() + location.hash); } catch (e) { /* the old world then */ } }
+  var Q = new URLSearchParams(location.search), errBox = document.getElementById('err'), seen = {};
+  window.GTfail = function (m) { m = String(m); if (seen[m]) return; seen[m] = 1; errBox.textContent += m + '\n'; };
+  addEventListener('error', function (e) { GTfail('ERROR ' + (e.filename || '').split('/').pop() + ':' + e.lineno + '  ' + e.message); });
+  addEventListener('unhandledrejection', function (e) { GTfail('REJECTION ' + (e.reason && e.reason.stack || e.reason)); });
+  var MODULES = ['core', 'front', 'materials', 'render', 'atmos', 'audio', 'radio-library', 'vehicle-radio', 'samples', 'humans', 'people', 'hero', 'onfoot', 'weapons', 'combat', 'cockpit',
+    'cnroad', 'riverside', 'snackstreet', 'hotpot', 'landmarks', 'cnvehicles', 'carmods', 'shops', 'street', 'perf', 'fxsmall', 'traffic', 'peds', 'demo', 'cheats', 'cngame'];   /* traffic / peds (TF): the coast's car stream and street people (rings, pool, characters, English barks). fxsmall: dust / splashes / leaves / sparks / birds / steam wisps. g7: vo, phone, economy, cnstory, opening, cntrailer are no longer loaded */
+  /* ?world=ct — 玉埠 Jade Wharf (js/chinatown.js) stands in for the 四方街 world modules. g7: the full start (gate → logo → menu → loading → the street), the clock runs from 17:24 */
+  if (Q.get('world') === 'ct') { MODULES = MODULES.filter(function (n) { return ['cnroad', 'riverside', 'snackstreet', 'hotpot', 'landmarks', 'street', 'cnstory', 'opening', 'cntrailer'].indexOf(n) < 0; }); MODULES.splice(MODULES.indexOf('cnvehicles'), 0, 'chinatown');
+    [['freeze', '0'], ['partner', '0'], ['view', '3']].forEach(function (d) { if (Q.get(d[0]) === null) Q.set(d[0], d[1]); }); }
+  /* ?world=coast — 月湾 Moonbay ocean front (js/coast.js + coast_sea / coast_beach / coast_deco; js/chinatown.js loads too but only defines GT.streetkit); free roam only */
+  if (Q.get('world') === 'coast') { MODULES = MODULES.filter(function (n) { return ['cnroad', 'riverside', 'snackstreet', 'hotpot', 'landmarks', 'street', 'cnstory', 'opening', 'cntrailer'].indexOf(n) < 0; }); MODULES.splice(MODULES.indexOf('cnvehicles'), 0, 'chinatown', 'coast_sea', 'coast_beach', 'coast_deco', 'coast');
+    [['auto', 'free'], ['story', '0'], ['trailer', '0'], ['freeze', '0'], ['bot', '0'], ['partner', '0'], ['t', '17.25'], ['px', '8.6'], ['pz', '-34'], ['ph', '0'], ['view', '3']].forEach(function (d) { if (Q.get(d[0]) === null) Q.set(d[0], d[1]); }); }
+  var only = Q.get('only') ? Q.get('only').split(',') : null, fill = document.getElementById('boot-fill'), msg = document.getElementById('boot-msg');
+  var selftest = Q.get('selftest') === '1', auto = Q.get('auto');
+  if (selftest) only = ['cnroad', 'shops', 'traffic', 'peds'];   /* traffic / peds only run their pure-logic checks here */
+  if (auto || selftest) document.getElementById('boot').style.display = 'none';
+  function load(i) {
+    fill.style.width = Math.round(i / (MODULES.length + 8) * 100) + '%';
+    if (i >= MODULES.length) return setTimeout(start, 0);
+    var name = MODULES[i];
+    if (only && name !== 'core' && name !== 'cngame' && only.indexOf(name) < 0) return load(i + 1);
+    var s = document.createElement('script'); s.src = 'js/' + name + '.js?v=' + Date.now();
+    s.onload = function () {
+      // the studio logo plays while the remaining modules download and the block is built behind it
+      if (name === 'front' && !auto && !selftest && window.GT && GT.front && GT.front.splash) { try { GT.front.init(); window.GTsplash = GT.front.splash({ gate: true }); document.getElementById('boot').style.display = 'none'; } catch (e) { console.warn('splash', e); } }
+      load(i + 1);
+    };
+    s.onerror = function () { console.warn('module missing: ' + name); load(i + 1); };
+    document.head.appendChild(s);
+  }
+  function start() {
+    if (!window.THREE) return GTfail('three.js failed to load');
+    if (!window.GT || !GT.cngame) return GTfail('js/cngame.js failed to load');
+    msg.textContent = '正在搭建街区';
+    setTimeout(function () {
+      try { GT.cngame.boot({ canvas: document.getElementById('c'), hud: document.getElementById('hud'), query: Q }); }
+      catch (e) { GTfail('boot threw: ' + (e.stack || e)); }
+    }, 0);
+  }
+  if (!window.THREE) GTfail('three.js failed to load (cdnjs unreachable?)');
+  load(0);
+})();
+</script>
+</body>
+</html>

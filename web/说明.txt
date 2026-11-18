@@ -1,0 +1,21 @@
+VICE CITY AFTERGLOW · 罪恶城余晖（自由漫游）
+
+怎么玩
+- Mac：双击「启动游戏.command」。第一次如果提示无法打开，右键它选「打开」。会自动用浏览器打开游戏。
+- Windows：双击 start-windows.bat（需要装 Python 3）。
+- 浏览器用 Chrome 或 Edge，建议全屏、戴耳机。不能直接双击 cn.html 打开（浏览器会禁止读取模型和声音文件）。
+
+按键
+WASD 走 · Shift 跑 · 空格 跳 · 鼠标左键 出拳/开火 · 按住右键或 J 瞄准 · Q 或 Tab 武器轮 · R 换弹
+F 上车/抢车/下车 · E 互动/捡东西 · V 切换第一/第三人称 · M 大地图（点商店图标可导航）· Esc 暂停
+秘籍：暂停后输入 workfisher，+$1,000,000
+
+常用地址（把端口换成启动后看到的那个）
+- 完整开场：cn.html
+- 只看开场演示片：cn.html?auto=trailer
+- 进菜单前播放演示片：cn.html?intro=1
+
+素材来源和许可：audio/sfx/CREDITS.md、audio/music/CREDITS.md、assets/models/CREDITS.md、vendor/LICENSE-three.txt
+
+
+公开版电台默认播放 Moonbay FM。音乐来源见 audio/music/CREDITS.md。可在源码中导入自己的 MP3，详见项目 README。
