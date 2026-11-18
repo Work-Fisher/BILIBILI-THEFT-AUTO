@@ -2,7 +2,9 @@
 
 在月湾大道步行、开车、听电台，或在海滨城区自由探索。这是项目的公开可分发版，网页版包含 4K 设置和武器轮盘修复。
 
-[下载游戏](https://github.com/Work-Fisher/BILIBILI-THEFT-AUTO/releases/tag/v2026.11.18) · [制作教程（中文 PDF，21 页）](docs/tutorial.pdf) · [原项目在线试玩（B 站 TOY）](https://www.bilibili.com/toy/bilibili-theft-auto-1)
+[下载游戏](https://github.com/Work-Fisher/BILIBILI-THEFT-AUTO/releases/tag/v2026.11.18) · [制作教程（中文 PDF，21 页）](docs/tutorial.pdf)
+
+原 B 站 TOY 作品地址目前返回 404。要试玩当前公开版，请下载下面的单文件 HTML。
 
 ## 选择版本
 
